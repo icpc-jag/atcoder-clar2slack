@@ -21,8 +21,8 @@ with open(sys.argv[1], encoding="utf-8") as f:
         user_name = func(b[1])
         assert re.fullmatch(r"<td>.*</td>", b[2], re.S)
         assert re.fullmatch(r"<td>.*</td>", b[3], re.S)
-        question = re.sub(r"<.*?>", "", b[2][4:-5])
-        response = re.sub(r"<.*?>", "", b[3][4:-5])
+        question = re.sub(r"<.*?>", "", b[2][4:-5]).replace("&#039;", "'")
+        response = re.sub(r"<.*?>", "", b[3][4:-5]).replace("&#039;", "'")
         public = re.sub(r"<.*?>", "", b[4])
         update_url = CONTEST_URL + re.search(r"<a href=\"(.*?)\">", b[7]).group(1)
 
