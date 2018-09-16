@@ -2,7 +2,7 @@
 
 ## これは何
 
-![サンプル画像](https://i.imgur.com/NoKzHru.png)
+![サンプル画像](https://imgur.com/9T2Tg7W.png)
 
 * ↑のような感じで、AtCoderの質問(Clarification)が来たらSlackに通知します。
 * owner権限を持っている前提のコンテスト管理者用のツールのため、コンテスタントだと使えません。
