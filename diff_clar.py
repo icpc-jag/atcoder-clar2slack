@@ -4,6 +4,37 @@ import sys
 
 SLACK_SH = sys.argv[3]
 
+def question_json(clar_no, info):
+    return json.dumps({"attachments":[{
+        "pretext": "<!here>",
+        "title": "[Clar No.{clar_no}]".format(clar_no=clar_no),
+        "color": "good",
+        "fields": [
+            {"title": "問題名", "value": info["title"], "short": "true"},
+            {"title": "ユーザ名", "value": info["user_name"], "short": "true"},
+            {"title": "質問", "value": info["question"]}
+        ],
+        "actions": [
+            {"type": "button", "text": "回答する", "url": info["update_url"]}
+        ]
+    }]})
+
+def response_json(clar_no, info):
+    return json.dumps({"attachments":[{
+        "title": "[Clar No.{clar_no} に回答しました]".format(clar_no=clar_no),
+        "color": "#439FE0",
+        "fields": [
+            {"title": "問題名", "value": info["title"], "short": "true"},
+            {"title": "ユーザ名", "value": info["user_name"], "short": "true"},
+            {"title": "質問", "value": info["question"]},
+            {"title": "回答", "value": info["response"]},
+            {"title": "全体公開", "value": info["public"], "short": "true"}
+        ],
+        "actions": [
+            {"type": "button", "text": "回答を修正する", "url": info["update_url"]}
+        ]
+    }]})
+
 with open(sys.argv[1], encoding="utf8") as f:
     a = json.loads(f.read())
     data_before = {x["update_url"]: x for x in a}
@@ -17,22 +48,6 @@ for x in data_after:
     if update_url in data_before:
         y = data_before[update_url]
         if x["response"] != y["response"] or x["public"] != y["public"]:
-            s = "[Clar No.{clar_no} に回答しました]\n問題名：{title}\nユーザ名：{user_name}\n質問：{question}\n回答：{response}\n全体公開：{public}\n<{update_url}|質問に回答する>".format(
-                clar_no=clar_no,
-                title=x["title"],
-                user_name=x["user_name"],
-                question=x["question"],
-                response=x["response"],
-                public=x["public"],
-                update_url=x["update_url"],
-            )
-            subprocess.call(["/bin/bash", SLACK_SH, json.dumps({"text": s})])
+            subprocess.call(["/bin/bash", SLACK_SH, response_json(clar_no, x)])
     else:
-        s = "[Clar No.{clar_no}]\n問題名：{title}\nユーザ名：{user_name}\n質問：{question}\n<{update_url}|質問に回答する>".format(
-            clar_no=clar_no,
-            title=x["title"],
-            user_name=x["user_name"],
-            question=x["question"],
-            update_url=x["update_url"],
-        )
-        subprocess.call(["/bin/bash", SLACK_SH, json.dumps({"text": s})])
+        subprocess.call(["/bin/bash", SLACK_SH, question_json(clar_no, x)])
