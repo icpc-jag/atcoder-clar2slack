@@ -1,4 +1,4 @@
-CONTEST_URL=https://hogehoge.contest.atcoder.jp
+CONTEST_URL=https://atcoder.jp/contests/<contest_name>/
 ATCODER_ID=
 ATCODER_PASS=
 SLACK_HOOK_URL=

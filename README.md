@@ -5,8 +5,8 @@
 ![サンプル画像](https://imgur.com/9T2Tg7W.png)
 
 * ↑のような感じで、AtCoderの質問(Clarification)が来たらSlackに通知します。
-* owner権限を持っている前提のコンテスト管理者用のツールのため、コンテスタントだと使えません。
-* AtCoder Beta版には対応していません。
+* Manager権限を持っている前提のコンテスト管理者用のツールのため、Contestantだと使えません。
+* 旧サイト(`https://xxx.contest.atcoder.jp`)の廃止に伴い、新サイト(`https://atcoder.jp/contests/xxx`)に対応しました。
 
 ## 使い方
 
@@ -19,7 +19,7 @@ cp config_sample config
 2. configファイルを以下の例に従って編集。
 
 ```
-CONTEST_URL=https://jag2017autumn.contest.atcoder.jp           # クラー通知したいコンテストのURL(Beta版には対応していません)
+CONTEST_URL=https://atcoder.jp/contests/jag2017autumn/         # クラー通知したいコンテストのURL
 ATCODER_ID=username                                            # コンテストの管理権限を所持しているユーザのID
 ATCODER_PASS=password                                          # ユーザのパスワード
 SLACK_HOOK_URL=https://hooks.slack.com/services/XXXX/XXXX/XXXX # slackのincoming webhook url ※1

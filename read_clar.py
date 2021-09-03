@@ -2,32 +2,36 @@ import json
 import re
 import sys
 
-CONTEST_URL = sys.argv[2]
-SAVE_PATH = sys.argv[3]
-
-def func(s):
-    m = re.search(r"<a href=\"(.*)\">(.*)</a>", s)
-    return "<%s%s|%s>" % (CONTEST_URL, m.group(1), m.group(2))
+SAVE_PATH = sys.argv[2]
 
 
 data = []
 with open(sys.argv[1], encoding="utf-8") as f:
-    a = re.findall(r"<tbody>.*?</tbody>", f.read(), re.S)
-    if not a:
+    tbody = re.findall(r"<tbody>.*?</tbody>", f.read(), re.S)
+    if not tbody:
         print("<tbody> not found")
     else:
-        assert len(a) == 1
-        a = re.findall(r"<tr>.*?</tr>", a[0], re.S)
-        for x in a:
-            b = re.findall(r"<td.*?</td>", x, re.S)
-            title = func(b[0])
-            user_name = func(b[1])
-            assert re.fullmatch(r"<td>.*</td>", b[2], re.S)
-            assert re.fullmatch(r"<td>.*</td>", b[3], re.S)
-            question = re.sub(r"<.*?>", "", b[2][4:-5]).replace("&#039;", "'")
-            response = re.sub(r"<.*?>", "", b[3][4:-5]).replace("&#039;", "'")
-            public = re.sub(r"<.*?>", "", b[4])
-            update_url = CONTEST_URL + re.search(r"<a href=\"(.*?)\">", b[7]).group(1)
+        assert len(tbody) == 1
+        rows = re.findall(r"<tr.*?</tr>", tbody[0], re.S)
+        for row in rows:
+            columns = re.findall(r"<td.*?</td>", row, re.S)
+
+            title = re.sub(r"\s+", " ", columns[0])[4:-5].strip()
+            if title == "":
+                title = "（指定なし）"
+            else:
+                m = re.search(r"<a href=\"(.*)\">(.*)</a>", title)
+                title = "<%s|%s>" % ("https://atcoder.jp" + m.group(1), m.group(2).strip())
+
+            m = re.search(r"<a href=\"(.*)\" .*\"><span.*>(.*)</span></a>.*<a.*", re.sub(r"\s+", " ", columns[1]))
+            user_name = "<%s|%s>" % ("https://atcoder.jp" + m.group(1), m.group(2))
+
+            assert re.fullmatch(r"<td>.*</td>", columns[2], re.S)
+            assert re.fullmatch(r"<td>.*</td>", columns[3], re.S)
+            question = re.sub(r"<.*?>", "", columns[2][55:-11]).replace("&#039;", "'")
+            response = re.sub(r"<.*?>", "", columns[3][55:-11]).replace("&#039;", "'")
+            public = re.sub(r"<.*?>", "", columns[4][4:-5])
+            update_url = "https://atcoder.jp" + re.search(r"<a href=\"(.*?)\">", columns[7]).group(1)
 
             data.append({
                 "title": title,
